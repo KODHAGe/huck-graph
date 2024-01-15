@@ -91,7 +91,8 @@ export default function tidyStats(csvData) {
         //Sleep data parser
         splitData.sleep = tidy(
             data,
-            filter((d) => d.Type === "Sleep")
+            filter((d) => d.Type === "Sleep"),
+            //filter((d) => d["Start"].includes('2024-01-01'))
         )
 
         // combined feeds and solids
@@ -129,9 +130,10 @@ export default function tidyStats(csvData) {
             {/*<BarChart data={splitData.feed.bottle}/>
             <BarChart data={splitData.solids.toplist}/>
             <AreaGraph data={splitData.sleep}/>
-            <StreamGraph data={splitData.allFoods}/>
-            <JacquardGraph data={splitData.sleep}/>
+            
             <FullAreaGraph data={splitData.allFoods}/>*/}
+            <JacquardGraph data={splitData.sleep}/>
+            <StreamGraph data={splitData.allFoods}/>
         </div>
     );
 }

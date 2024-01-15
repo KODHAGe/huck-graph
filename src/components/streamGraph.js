@@ -60,7 +60,7 @@ const StreamGraph = ({ data }) => {
 
             const color = d3.scaleOrdinal()
                 .domain(series.map(d => d.key))
-                .range(d3.schemeTableau10);
+                .range(d3.schemeSet1);
 
             const area = d3.area()
                 .x(d => x(parseWeek(d.data[0])))

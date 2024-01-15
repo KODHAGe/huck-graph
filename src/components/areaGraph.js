@@ -31,7 +31,7 @@ const AreaGraph = ({ data }) => {
             let svg = select(d3svg.current)
 
             let numberedWeeks = data.map((d) => {
-                d.weekNr = weekNr(week(d.Start))
+                d.weekNr = weekNr(week(d.starttime))
                 return d
             })
 
