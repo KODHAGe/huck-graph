@@ -38,7 +38,7 @@ const JacquardGraph = ({ data }) => {
     console.log(data)
     const d3svg = useRef(null)
     const width = 928;
-    const height = 1900;
+    const height = 1200;
     const marginTop = 20;
     const marginRight = 30;
     const marginBottom = 30;
@@ -87,10 +87,10 @@ const JacquardGraph = ({ data }) => {
                 .call(d3.axisLeft(x)
                     //.tickFormat(formatDay)
                     .tickPadding(0))
-                //.call(g => g.select(".domain").remove())
+                .call(g => g.select(".domain").remove())
                 .call(g => g.selectAll(".tick text")
                     .attr("text-anchor", "start")
-                    .attr("x", 6)
+                    .attr("x", 1)
                     .attr("dy", null))
                 .call(g => g.selectAll(".tick line")
                     .attr("y1", -margin.top)
@@ -101,9 +101,9 @@ const JacquardGraph = ({ data }) => {
                 .call(d3.axisTop(y)
                     .ticks(24)
                     .tickSize(-width + margin.left + margin.right)
-                    .tickPadding(10))
+                    .tickPadding(1))
                 //.call(g => g.selectAll(".domain, .tick:first-of-type, .tick:last-of-type").remove())
-                .call(g => g.selectAll(".domain").attr("stroke", "#000").attr("stroke-width", 5))
+                //.call(g => g.selectAll(".domain").attr("stroke", "#000").attr("stroke-width", 1))
 
             const session = svg.append("g")
                 .attr("fill", "#333")
@@ -136,8 +136,8 @@ const JacquardGraph = ({ data }) => {
         <svg
             className="jacquard-container"
             width="100%"
-            height={height + margin.top + margin.bottom}
-            viewBox={"0 0 "+height+" 540"}
+            //height={height + margin.top + margin.bottom}
+            viewBox={"0 0 "+height+" 900"}
             preserveAspectRatio="xMidYMid meet" 
             role="img"
             ref={d3svg}

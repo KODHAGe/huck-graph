@@ -19,7 +19,7 @@ const StreamGraph = ({ data }) => {
 
     const d3svg = useRef(null)
     const width = 928;
-    const height = 500;
+    const height = 928;
     const marginTop = 20;
     const marginRight = 30;
     const marginBottom = 30;
@@ -42,7 +42,7 @@ const StreamGraph = ({ data }) => {
                 .order(d3.stackOrderInsideOut)
                 .keys(d3.union(numberedWeeks.map(d => d["food"]))) // distinct series keys, in input order
                 .value(([, D], key) => {
-                    if(D.get(key)) {
+                    if (D.get(key)) {
                         return D.get(key)
                     } else {
                         return 0
@@ -50,28 +50,33 @@ const StreamGraph = ({ data }) => {
                 })
                 (d3.rollup(numberedWeeks, (D) => D.length, (d) => d.weekNr, (d) => d["food"])); // group by stack then series key
 
-            const x = d3.scaleUtc()
+            const y = d3.scaleUtc()
                 .domain(d3.extent(numberedWeeks, d => parseWeek(d.weekNr)))
-                .range([marginLeft, width - marginRight]);
+                .range([height - marginBottom, marginTop]);
 
-            const y = d3.scaleLinear()
+            const x = d3.scaleLinear()
                 .domain(d3.extent(series.flat(2)))
-                .rangeRound([height - marginBottom, marginTop]);
+                .range([marginLeft, width - marginRight]);
 
             const color = d3.scaleOrdinal()
                 .domain(series.map(d => d.key))
-                .range(d3.schemeSet1);
+                .range(d3.schemeSet2);
 
             const area = d3.area()
-                .x(d => x(parseWeek(d.data[0])))
-                .y0(d => y(d[0]))
-                .y1(d => y(d[1]))
-                .curve(d3.curveBumpX)
+                .y(d => y(parseWeek(d.data[0])))
+                .x0(d => x(d[0]))
+                .x1(d => x(d[1]))
+                .curve(d3.curveBumpY)
 
-            // Add the y-axis, remove the domain line, add grid lines and a label.
+            /*
             svg.append("g")
-                .attr("transform", `translate(${marginLeft},0)`)
-                .call(d3.axisLeft(y).ticks(height / 80).tickFormat((d) => Math.abs(d).toLocaleString("en-US")))
+                .attr("transform", `translate(0,${height - marginBottom})`) // Change to y axis position
+                .call(d3.axisLeft(x).ticks(width / 80).tickFormat((d) => Math.abs(d).toLocaleString("en-US")))
+                .call(g => g.select(".domain").remove());
+
+            svg.append("g")
+                .attr("transform", `translate(${marginLeft},0)`) // Change to x axis position
+                .call(d3.axisBottom(y).tickSizeOuter(0))
                 .call(g => g.select(".domain").remove())
                 .call(g => g.selectAll(".tick line").clone()
                     .attr("x2", width - marginLeft - marginRight)
@@ -82,12 +87,7 @@ const StreamGraph = ({ data }) => {
                     .attr("fill", "currentColor")
                     .attr("text-anchor", "start")
                     .text("Feedings"));
-
-            // Append the x-axis and remove the domain line.
-            svg.append("g")
-                .attr("transform", `translate(0,${height - marginBottom})`)
-                .call(d3.axisBottom(x).tickSizeOuter(0))
-                .call(g => g.select(".domain").remove());
+            */
 
             // Show the areas
             svg.append("g")
@@ -104,8 +104,8 @@ const StreamGraph = ({ data }) => {
     return (
         <svg
             className="streamgraph-container"
-            width={width + margin.left + margin.right}
-            height={height + margin.top + margin.bottom}
+            width="100%"
+            viewBox={"0 0 "+height+" 900"}
             role="img"
             ref={d3svg}
         ></svg>

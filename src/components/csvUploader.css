@@ -1,0 +1,48 @@
+.csvUploader {
+    align-items: center;
+    display: 'flex';
+    flex-direction: column;
+}
+
+button {
+    display: inline-block;
+    outline: 0;
+    border: none;
+    cursor: pointer;
+    font-weight: 400;
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: 'EB Garamond';
+    /*height: 30px;*/
+    background-color: rgb(83, 63, 102);
+    color: rgb(232, 225, 239);
+    padding: 8 8px;
+    :hover {
+        background-color: #0000001a;
+    }
+  }
+
+  .addbutton {
+    width: 100%;
+    height: 32px;
+    font-size: 0.8rem;
+    padding: '0 8px';
+  }
+
+  .removebutton {
+    padding: 8px;
+    font-size: 0.8rem;
+  }
+
+  .acceptedfile {
+    height: 32px;
+    line-height: 32px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+

@@ -4,28 +4,11 @@ import { useCSVReader } from 'react-papaparse';
 
 import { tidy, count } from '@tidyjs/tidy'
 
+import './csvUploader.css'
+
 const styles = {
-    csvReader: {
-        display: 'flex',
-        flexDirection: 'row',
-        marginBottom: 10,
-    },
-    browseFile: {
-        width: '20%',
-    },
-    acceptedFile: {
-        border: '1px solid #ccc',
-        height: 45,
-        lineHeight: 2.5,
-        paddingLeft: 10,
-        width: '80%',
-    },
-    remove: {
-        borderRadius: 0,
-        padding: '0 20px',
-    },
     progressBarBackgroundColor: {
-        backgroundColor: 'red',
+        backgroundColor: 'rgb(83, 63, 102)',
     },
 };
 
@@ -51,16 +34,20 @@ export default function CSVReader({updateCsvData}) {
                 getRemoveFileProps,
             }) => (
                 <>
-                    <div style={styles.csvReader}>
-                        <button type='button' {...getRootProps()} style={styles.browseFile}>
-                            Browse file
+                    <div className="csvUploader" style={styles.csvReader}>
+                        <button className="addbutton" type='button' {...getRootProps()} style={styles.browseFile}>
+                            Choose file
                         </button>
-                        <div style={styles.acceptedFile}>
-                            {acceptedFile && acceptedFile.name}
-                        </div>
-                        <button {...getRemoveFileProps()} style={styles.remove}>
-                            Remove
-                        </button>
+                        { acceptedFile &&
+                            <div className="acceptedfile" style={styles.acceptedFile}>
+                                {acceptedFile && acceptedFile.name}
+                            </div>
+                        }
+                        { acceptedFile &&
+                            <a className="removebutton" {...getRemoveFileProps()} style={styles.remove}>
+                                Remove file
+                            </a>
+                        }
                     </div>
                     <ProgressBar style={styles.progressBarBackgroundColor} />
                 </>

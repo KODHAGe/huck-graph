@@ -7,6 +7,8 @@ import AreaGraph from './areaGraph'
 import JacquardGraph from './jacquardGraph'
 import FullAreaGraph from './fullAreaGraph'
 
+import './statsView.css'
+
 
 import { tidy, filter, groupBy, summarize, count, arrange, rename, mutate, sliceHead, addRows} from '@tidyjs/tidy'
 
@@ -122,7 +124,6 @@ export default function tidyStats(csvData) {
     }
     return (
         <div id="statsView">
-            <h1>huckdata</h1>
             <span>amount of diapers: </span>{splitData.diaper.length}<br/>
             <span>amount of feedings: </span>{splitData.feed.length}<br/>
             <span>amount of solid feedings: </span>{splitData.solids.length}<br/>
