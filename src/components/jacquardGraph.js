@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { select } from 'd3-selection'
 import { timeParse, timeFormat, utcParse, utcFormat } from 'd3-time-format'
+import { utcHour, utcMinute } from 'd3-time'
 import { max } from 'd3-array'
 import { scaleLinear, scaleBand } from 'd3-scale'
 import { axisLeft, axisBottom } from 'd3-axis'
@@ -10,7 +11,6 @@ import './jacquardGraph.css'
 
 // Margin convention often used with D3
 const margin = { top: 80, right: 60, bottom: 80, left: 60 }
-const color = ['#f05440', '#d5433d', '#b33535', '#283250']
 
 let time = timeParse("%Y-%m-%d %H:%M")
 let format = timeFormat("%-I %p")
@@ -34,8 +34,6 @@ function hours(date) {
 }
 
 const JacquardGraph = ({ data }) => {
-
-    console.log(data)
     const d3svg = useRef(null)
     const width = 928;
     const height = 1200;
@@ -49,10 +47,13 @@ const JacquardGraph = ({ data }) => {
 
             let parsedTime = data.map((d) => {
                 d.starttime = time(d.Start)
-                d.endtime = time(d.End)
+                if(d.End == "") {
+                    d.endtime = utcMinute.offset(time(d.Start), 10)
+                } else {
+                    d.endtime = time(d.End)
+                }
                 return d
             })
-            console.log(parsedTime)
 
             function dayslice(d) {
                 let startDay = day(d.starttime)
@@ -75,43 +76,37 @@ const JacquardGraph = ({ data }) => {
                     d3.timeDay.floor(d3.min(parsedTime, d => d.starttime)),
                     d3.timeDay.ceil(d3.max(parsedTime, d => d.endtime))
                 ])
-                .rangeRound([margin.left, width - margin.right])
+                .rangeRound([0, width])
                 //.nice()
 
             const y = d3.scaleLinear() // Change to d3.scaleLinear()
                 .domain([0, 24])
-                .rangeRound([margin.top, height - margin.bottom])
-
-            svg.append("g")
-                //.attr("transform", `translate(0,${margin.top})`)
-                .call(d3.axisLeft(x)
-                    //.tickFormat(formatDay)
-                    .tickPadding(0))
-                .call(g => g.select(".domain").remove())
-                .call(g => g.selectAll(".tick text")
-                    .attr("text-anchor", "start")
-                    .attr("x", 1)
-                    .attr("dy", null))
-                .call(g => g.selectAll(".tick line")
-                    .attr("y1", -margin.top)
-                    .attr("y2", height - margin.top))
-
-            svg.append("g")
-                .attr("transform", `translate(0,${margin.left})`)
-                .call(d3.axisTop(y)
-                    .ticks(24)
-                    .tickSize(-width + margin.left + margin.right)
-                    .tickPadding(1))
-                //.call(g => g.selectAll(".domain, .tick:first-of-type, .tick:last-of-type").remove())
-                //.call(g => g.selectAll(".domain").attr("stroke", "#000").attr("stroke-width", 1))
-
+                .rangeRound([0, height])
+                
             const session = svg.append("g")
-                .attr("fill", "#333")
                 .selectAll("g")
                 .data(parsedTime)
                 .join("g")
+                .attr("fill", (d) => { 
+                    if(d.Type === 'Sleep') {
+                        return "#17a2b8"
+                    } else if (d.Type === 'Feed') {
+                        if(d["Start Location"] === "Breast") {
+                            return "#8fd33c"
+                        } else {
+                            return "#fd7e14"
+                        }
+                    } else if (d.Type === 'Diaper') {
+                        return "#ebb85f"
+                    } else if (d.Type === 'Potty') {
+                        return "#6c757d"
+                    } else if (d.Type === 'Solids') {
+                        return "#e83e8c"
+                    } else {
+                        return "#6610f2"
+                    }
+                })
                 .on("mouseover", (event, d) => {
-                    console.log(d)
                     event.currentTarget.style.fill = "red"}
                     )
                 .on("mouseout", (event) => event.currentTarget.style.fill = "")
@@ -119,10 +114,14 @@ const JacquardGraph = ({ data }) => {
             session.selectAll("rect")
                 .data(dayslice)
                 .join("rect")
-                .attr("x", (d) => y(hours(d[0]))) // Swap x and y
-                .attr("width", (d) => y(hours(d[1]) || 24) - y(hours(d[0]))) // Swap x and y
+                .attr("x", (d) => y(hours(d[0])))
+                .attr("width", (d) => {
+                    return y(hours(d[1]) || 24) - y(hours(d[0]))
+                })
                 .attr("y", (d) => x(day(d[0])))
-                .attr("height", 1)
+                .attr("height", (d) => {
+                    return 1
+                })
                 .attr("rx", 1)
 
             /*session.append("title")
@@ -146,3 +145,27 @@ const JacquardGraph = ({ data }) => {
 }
 
 export default JacquardGraph
+
+/*
+    --blue: #007487;
+    --indigo: #6610f2;
+    --purple: #6f42c1;
+    --pink: #e83e8c;
+    --red: #fb5d19;
+    --orange: #fd7e14;
+    --yellow: #ebb85f;
+    --green: #8fd33c;
+    --teal: #20c997;
+    --cyan: #17a2b8;
+    --white: #fff;
+    --gray: #6c757d;
+    --gray-dark: #343a40;
+    --primary: #8fd33c;
+    --secondary: #6c757d;
+    --success: #8fd33c;
+    --info: #17a2b8;
+    --warning: #ebb85f;
+    --danger: #fb5d19;
+    --light: #f8f9fa;
+    --dark: #343a40;
+    */

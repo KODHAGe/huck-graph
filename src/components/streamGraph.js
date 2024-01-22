@@ -34,7 +34,7 @@ const StreamGraph = ({ data }) => {
                 return d
             })
 
-            console.log(numberedWeeks)
+            //console.log(numberedWeeks)
 
             // Determine the series that need to be stacked.
             const series = d3.stack()
@@ -67,27 +67,6 @@ const StreamGraph = ({ data }) => {
                 .x0(d => x(d[0]))
                 .x1(d => x(d[1]))
                 .curve(d3.curveBumpY)
-
-            /*
-            svg.append("g")
-                .attr("transform", `translate(0,${height - marginBottom})`) // Change to y axis position
-                .call(d3.axisLeft(x).ticks(width / 80).tickFormat((d) => Math.abs(d).toLocaleString("en-US")))
-                .call(g => g.select(".domain").remove());
-
-            svg.append("g")
-                .attr("transform", `translate(${marginLeft},0)`) // Change to x axis position
-                .call(d3.axisBottom(y).tickSizeOuter(0))
-                .call(g => g.select(".domain").remove())
-                .call(g => g.selectAll(".tick line").clone()
-                    .attr("x2", width - marginLeft - marginRight)
-                    .attr("stroke-opacity", 0.1))
-                .call(g => g.append("text")
-                    .attr("x", -marginLeft)
-                    .attr("y", 10)
-                    .attr("fill", "currentColor")
-                    .attr("text-anchor", "start")
-                    .text("Feedings"));
-            */
 
             // Show the areas
             svg.append("g")

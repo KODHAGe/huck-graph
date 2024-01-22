@@ -26,8 +26,10 @@ function App() {
             <CsvUploader updateCsvData={handleCsvData}></CsvUploader>
           </div>
         </div>
-        <div className="contents">
+        <div className="contents">{
+          csvData &&
           <StatsView csvData={csvData}></StatsView>
+        }
         </div>
       </div>
       <footer>
