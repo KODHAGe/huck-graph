@@ -7,6 +7,11 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
+  /*paint-order: stroke;*/
+  max-width: 900px;
+  margin: auto;
+  left:0;
+  right:0;
 }
 
 .App-logo {
@@ -49,10 +54,6 @@
 }
 
 .App {
-  max-width: 900px;
-  margin: auto;
-  left:0;
-  right:0;
 }
 
 footer {

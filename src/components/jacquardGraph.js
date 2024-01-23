@@ -33,14 +33,15 @@ function hours(date) {
         + date.getMilliseconds() / (60 * 60 * 1000);
 }
 
-const JacquardGraph = ({ data }) => {
+const JacquardGraph = ({ data, days }) => {
+
+    console.log(days)
+    const dayHeight = 1;
+    const dayMargin = 0;
     const d3svg = useRef(null)
-    const width = 928;
-    const height = 1200;
-    const marginTop = 20;
-    const marginRight = 30;
-    const marginBottom = 30;
-    const marginLeft = 40;
+    const width = 900;
+    const height = days*(dayHeight + dayMargin);
+
     useEffect(() => {
         if (data && d3svg.current) {
             let svg = select(d3svg.current)
@@ -71,7 +72,7 @@ const JacquardGraph = ({ data }) => {
             }
 
             // Set scales
-            const x = d3.scaleTime() // Change to d3.scaleTime()
+            const x = d3.scaleTime()
                 .domain([
                     d3.timeDay.floor(d3.min(parsedTime, d => d.starttime)),
                     d3.timeDay.ceil(d3.max(parsedTime, d => d.endtime))
@@ -79,7 +80,7 @@ const JacquardGraph = ({ data }) => {
                 .rangeRound([0, width])
                 //.nice()
 
-            const y = d3.scaleLinear() // Change to d3.scaleLinear()
+            const y = d3.scaleLinear()
                 .domain([0, 24])
                 .rangeRound([0, height])
                 
@@ -120,7 +121,7 @@ const JacquardGraph = ({ data }) => {
                 })
                 .attr("y", (d) => x(day(d[0])))
                 .attr("height", (d) => {
-                    return 1
+                    return dayHeight
                 })
                 .attr("rx", 1)
 
@@ -129,7 +130,7 @@ const JacquardGraph = ({ data }) => {
             ${d.endtime.toLocaleString("en", dateFormat)}`);*/
 
         }
-    }, [data])
+    }, [data, days])
 
     return (
         <svg

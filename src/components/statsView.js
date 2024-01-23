@@ -140,25 +140,26 @@ export default function tidyStats(csvData) {
                 <p>Data parsed successfully, cool! Let's get started then.</p>
                 <p>Looks like your data is from {format(splitData.firstDate)} until {format(splitData.lastDate)}. Does this seem correct? I am not actually checking the date ranges in the data, just picking the first and last entry so there might be some oddities here.</p>
                 <p>Anyhow, thats a range of <span className="bold">{splitData.dateDiff}</span> days, quite impressive data gathering! In that time, you've recorded a total of <span className="bold">{csvData.csvData.length}</span> events.</p>
-                <p>Thats and average of <span class="bold">{Math.round(csvData.csvData.length / splitData.dateDiff)}</span> events logged per day! Neat! Out of those:</p>
-                <p>💩 <span className="bold">{splitData.diaper.length}</span> are diaper and potty data points</p>
-                <p>🍼 <span className="bold">{splitData.feed.length}</span> are data points about liquid feedings</p>
-                <p>🍎 <span className="bold">{splitData.solids.length}</span> are entries about solids</p>
-                <p>💤 <span className="bold">{splitData.sleep.length}</span> are sleeps</p>
-                <p>and <span className="bold">{csvData.csvData.length - (splitData.diaper.length + splitData.feed.length + splitData.solids.length + splitData.sleep.length)}</span> are some other events.</p>
+                <p>Thats and average of <span className="bold">{Math.round(csvData.csvData.length / splitData.dateDiff)}</span> events logged per day! Neat! Out of those:</p>
+                <h2>💩 <span className="bold">{splitData.diaper.length}</span> are diaper and potty data points</h2>
+                <h2>🍼 <span className="bold">{splitData.feed.length}</span> are data points about liquid feedings</h2>
+                <h2>🍎 <span className="bold">{splitData.solids.length}</span> are entries about solids</h2>
+                <h2>💤 <span className="bold">{splitData.sleep.length}</span> are sleeps</h2>
+                <h2>and <span className="bold">{csvData.csvData.length - (splitData.diaper.length + splitData.feed.length + splitData.solids.length + splitData.sleep.length)}</span> are some other events.</h2>
                 <p>Next, lets look at these a bit further.</p>
                 {/*<BarChart data={splitData.feed.bottle}/>
                 <BarChart data={splitData.solids.toplist}/>
                 <AreaGraph data={splitData.sleep}/>
                 
                 <FullAreaGraph data={splitData.allFoods}/>*/}
+                                <StreamGraph data={splitData.allFoods}  days={splitData.dateDiff}/>
+
                 <p>All your logged events, here you go:</p>
-                <JacquardGraph data={csvData.csvData}/>
+                <JacquardGraph data={csvData.csvData} days={splitData.dateDiff}/>
                 <p>Only sleep:</p>
-                <JacquardGraph data={splitData.sleep}/>
+                <JacquardGraph data={splitData.sleep} days={splitData.dateDiff}/>
                 <p></p>
-                <JacquardGraph data={splitData.solids.split}/>
-                <StreamGraph data={splitData.allFoods}/>
+                <JacquardGraph data={splitData.solids.split} days={splitData.dateDiff}/>
             </div>
             }
         </div>

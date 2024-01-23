@@ -4,43 +4,32 @@ import { utcParse } from 'd3-time-format'
 import * as d3 from 'd3'
 
 
-// margin convention often used with D3
-const margin = { top: 80, right: 60, bottom: 80, left: 60 }
-const width = 600 - margin.left - margin.right
-const height = 600 - margin.top - margin.bottom
-
-const color = ['#f05440', '#d5433d', '#b33535', '#283250']
-
 let week = utcParse("%Y-%m-%d %H:%M")
 let weekNr = d3.utcFormat("%Y%V")
 let parseWeek = utcParse("%Y%V")
 //2023-03-02 07:01
-const StreamGraph = ({ data }) => {
+const StreamGraph = ({ data, days }) => {
+
+    let numberedWeeks = data.map((d) => {
+        d.weekNr = weekNr(week(d.Start))
+        return d
+    })
+
+    let weekRange = d3.timeWeek.count(parseWeek(numberedWeeks[numberedWeeks.length - 1].weekNr), parseWeek(numberedWeeks[0].weekNr))
 
     const d3svg = useRef(null)
-    const width = 928;
-    const height = 928;
-    const marginTop = 20;
-    const marginRight = 30;
-    const marginBottom = 30;
-    const marginLeft = 40;
+    const width = 900;
+    const dayHeight = 21;
+    const height = weekRange * dayHeight
 
     useEffect(() => {
         if (data && d3svg.current) {
             let svg = select(d3svg.current)
 
-            let numberedWeeks = data.map((d) => {
-                d.weekNr = weekNr(week(d.Start))
-                return d
-            })
-
-            //console.log(numberedWeeks)
-
-            // Determine the series that need to be stacked.
             const series = d3.stack()
                 .offset(d3.stackOffsetSilhouette)
                 .order(d3.stackOrderInsideOut)
-                .keys(d3.union(numberedWeeks.map(d => d["food"]))) // distinct series keys, in input order
+                .keys(d3.union(numberedWeeks.map(d => d["food"])))
                 .value(([, D], key) => {
                     if (D.get(key)) {
                         return D.get(key)
@@ -50,23 +39,24 @@ const StreamGraph = ({ data }) => {
                 })
                 (d3.rollup(numberedWeeks, (D) => D.length, (d) => d.weekNr, (d) => d["food"])); // group by stack then series key
 
+            console.log(series)
             const y = d3.scaleUtc()
                 .domain(d3.extent(numberedWeeks, d => parseWeek(d.weekNr)))
-                .range([height - marginBottom, marginTop]);
+                .range([0, height]);
 
             const x = d3.scaleLinear()
                 .domain(d3.extent(series.flat(2)))
-                .range([marginLeft, width - marginRight]);
+                .range([0 + 30 , width - 30]);
 
             const color = d3.scaleOrdinal()
                 .domain(series.map(d => d.key))
-                .range(d3.schemeSet2);
+                .range(["#17a2b8","#8fd33c","#fd7e14","#ebb85f","#6c757d","#e83e8c","#6610f2"]);
 
             const area = d3.area()
                 .y(d => y(parseWeek(d.data[0])))
                 .x0(d => x(d[0]))
                 .x1(d => x(d[1]))
-                .curve(d3.curveBumpY)
+                .curve(d3.curveBasisOpen)
 
             // Show the areas
             svg.append("g")
@@ -74,18 +64,21 @@ const StreamGraph = ({ data }) => {
                 .data(series)
                 .join("path")
                 .attr("fill", d => color(d.key))
+                .attr("stroke", "rgb(232, 225, 239)")
+                .attr("stroke-width", "1")
                 .attr("d", area)
                 .append("title")
                 .text(d => d.key);
         }
-    }, [data])
+    }, [data, days])
 
     return (
         <svg
             className="streamgraph-container"
-            width="100%"
-            viewBox={"0 0 "+height+" 900"}
+            width="100%" height={height}
             role="img"
+            viewBox={"0 0 "+height+" 900"}
+            preserveAspectRatio="xMidYMid meet"
             ref={d3svg}
         ></svg>
     )
