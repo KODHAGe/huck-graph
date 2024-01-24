@@ -7,8 +7,10 @@ import * as d3 from 'd3'
 let week = utcParse("%Y-%m-%d %H:%M")
 let weekNr = d3.utcFormat("%Y%V")
 let parseWeek = utcParse("%Y%V")
-//2023-03-02 07:01
+
 const StreamGraph = ({ data, days }) => {
+
+    console.log(data)
 
     let numberedWeeks = data.map((d) => {
         d.weekNr = weekNr(week(d.Start))
@@ -39,7 +41,6 @@ const StreamGraph = ({ data, days }) => {
                 })
                 (d3.rollup(numberedWeeks, (D) => D.length, (d) => d.weekNr, (d) => d["food"])); // group by stack then series key
 
-            console.log(series)
             const y = d3.scaleUtc()
                 .domain(d3.extent(numberedWeeks, d => parseWeek(d.weekNr)))
                 .range([0, height]);
@@ -50,8 +51,9 @@ const StreamGraph = ({ data, days }) => {
 
             const color = d3.scaleOrdinal()
                 .domain(series.map(d => d.key))
-                .range(["#17a2b8","#8fd33c","#fd7e14","#ebb85f","#6c757d","#e83e8c","#6610f2"]);
-
+                //.range(["#17a2b8","#8fd33c","#fd7e14","#ebb85f","#6c757d","#e83e8c","#6610f2"]);
+                .range(["#845EC2","#D65DB1","#FF6F91","#FF9671","#FFC75F","#F9F871"]);
+                
             const area = d3.area()
                 .y(d => y(parseWeek(d.data[0])))
                 .x0(d => x(d[0]))
@@ -65,7 +67,7 @@ const StreamGraph = ({ data, days }) => {
                 .join("path")
                 .attr("fill", d => color(d.key))
                 .attr("stroke", "rgb(232, 225, 239)")
-                .attr("stroke-width", "1")
+                .attr("stroke-width", "2")
                 .attr("d", area)
                 .append("title")
                 .text(d => d.key);

@@ -17,7 +17,7 @@ function App() {
       <div className="main">
         <div className="intro">
           <span id="title">
-            <h1 className="title-heading">Huckleberry pie <span class="italic">(chart)</span></h1>
+            <h1 className="title-heading">Huckleberry pie <span className="italic">(chart)</span></h1>
             <img src="pie_1075891.png" className="title-icon"></img>
           </span>
           <p>A tool that cooks some nice stats and graphs out of your Huckleberry data. 
