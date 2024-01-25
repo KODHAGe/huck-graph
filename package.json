@@ -9,10 +9,12 @@
     "@tidyjs/tidy": "^2.5.2",
     "arquero": "^5.4.0",
     "d3": "^7.8.5",
+    "jspdf": "^2.5.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-papaparse": "^4.4.0",
     "react-scripts": "^5.0.1",
+    "svg2pdf.js": "^2.2.3",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

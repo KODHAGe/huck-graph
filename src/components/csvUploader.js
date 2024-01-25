@@ -22,9 +22,7 @@ export default function CSVReader({updateCsvData}) {
                 worker: true
             }}
             onUploadAccepted={(results) => {
-                console.log('csv data get')
                 updateCsvData(results.data)
-                console.log('---------------------------');
             }}
         >
             {({
@@ -49,7 +47,6 @@ export default function CSVReader({updateCsvData}) {
                             </a>
                         }
                     </div>
-                    <ProgressBar style={styles.progressBarBackgroundColor} />
                 </>
             )}
         </CSVReader>

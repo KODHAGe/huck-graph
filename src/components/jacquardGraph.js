@@ -7,6 +7,9 @@ import { scaleLinear, scaleBand } from 'd3-scale'
 import { axisLeft, axisBottom } from 'd3-axis'
 import * as d3 from 'd3'
 
+import { jsPDF } from 'jspdf'
+import 'svg2pdf.js'
+
 import './jacquardGraph.css'
 
 // Margin convention often used with D3
@@ -25,6 +28,22 @@ let formatDay = d3.timeFormat("%b")
 
 let dateFormat = ({ month: "short", day: "numeric", hour: "numeric", minute: "numeric" })
 
+
+const doc = new jsPDF({ format: 'a4', unit: 'px' })
+
+function saveFile(svgref,width, height) {
+    doc
+    .svg(svgref.current, {
+        x: -width/4,
+        y: height/2,
+        width: width,
+        height: height
+    })
+    .then(() => {
+        doc.save('myPDF.pdf')
+    })
+}
+
 function hours(date) {
     //console.log(date)
     return date.getHours()
@@ -35,7 +54,6 @@ function hours(date) {
 
 const JacquardGraph = ({ data, days }) => {
 
-    console.log(days)
     const dayHeight = 1;
     const dayMargin = 0;
     const d3svg = useRef(null)
@@ -133,15 +151,19 @@ const JacquardGraph = ({ data, days }) => {
     }, [data, days])
 
     return (
-        <svg
-            className="jacquard-container"
-            width="100%"
-            //height={height + margin.top + margin.bottom}
-            viewBox={"0 0 "+height+" 900"}
-            preserveAspectRatio="xMidYMid meet" 
-            role="img"
-            ref={d3svg}
-        ></svg>
+    <>
+    <svg
+        className="jacquard-container"
+        width="100%"
+        //height={height + margin.top + margin.bottom}
+        viewBox={"0 0 "+height+" 900"}
+        preserveAspectRatio="xMidYMid meet" 
+        role="img"
+        ref={d3svg}
+    ></svg>
+    <button onClick={() => {
+        saveFile(d3svg, 900, height)}}>pdf</button>
+    </>
     )
 }
 

@@ -67,24 +67,25 @@ const BubbleChart = ({ data, days }) => {
             })
             .attr("r", d => d.r);
 
-            /*
+            
             const text = node.append("text")
             .attr("clip-path", d => `circle(${d.r})`);
             
             text.append("tspan")
-            .attr("x", d => `- ${d.data.title.length / 2}em`)
-            .attr("y", d => `${d.data.title.length / 2 - 0.5}em`)
+            /*.attr("x", d => `-${d.data.title.length / 4}em`)
+            .attr("y", d => `${0.5}em`)*/
+            .attr('text-anchor', 'middle')
+            .attr('alignment-baseline', 'central')
             .attr("fill-opacity", 0.7)
             .text((d) => {
-                return d.data.title
+                if (d.data.count[0].n < 15 || d.data.title.length > 9) {
+                    return ""
+                } else {
+                    return d.data.title
+                }
             });
-
-            text.append("tspan")
-            .attr("x", 0)
-            .attr("y", d => `${d.data.title.length / 2 + 0.5}em`)
-            .attr("fill-opacity", 0.7)
-            .text(d => format(d.value));
-            */
+            
+            
         }
     }, [data, days])
 

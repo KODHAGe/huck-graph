@@ -1,0 +1,196 @@
+
+details {
+	position: relative;
+
+	// hide arrow marker
+	summary {
+		display: block;
+		&::-webkit-details-marker,
+		&::marker {
+			display: none;
+		}
+	}
+	
+	summary {
+		&:after {
+			content: "+";
+		}
+	}
+	&[open] {
+		// background: red;
+		summary {
+			&:after {
+				content: "–";
+			}
+		}
+	}
+}
+
+$AccordionHead--paddingV: 0.5rem;
+$AccordionHead--paddingH: 0.75rem;
+$AccordionHead--padding: $AccordionHead--paddingV $AccordionHead--paddingH;
+$AccordionPanel--padding: 0.75rem $AccordionHead--paddingH;
+
+$AccordionHead--borderWidth: 1px;
+$AccordionHead--borderColor: #CCC;
+$AccordionHead--border: $AccordionHead--borderWidth solid $AccordionHead--borderColor;
+$AccordionPanel-focus--borderColor: rgb(83, 63, 102);
+
+.Accordions {
+	outline: 1px dotted rgb(83, 63, 102);
+	position: relative;
+}
+.Accordions--asTabs {
+	.Accordion-head {
+		position: absolute;
+		top: 0;
+		// display: none;
+	}
+}
+// TABS //////////
+.TabButtons-list {
+	display: flex;
+    padding-inline-start: 0;
+}
+.TabButtons-listItem {
+	display: flex;
+}
+.TabButtons-button {
+	position: relative;
+	z-index: 2;
+	font: inherit;
+    font-size: 1.5em;
+	padding-left: 0rem;
+    padding-right: 1rem;
+
+	/*border: $AccordionHead--border;
+	border-bottom: 0;*/
+	text-decoration: none;
+	color: inherit;
+	&:hover {
+		/*outline: 1px solid $AccordionPanel-focus--borderColor;
+		outline-offset: -1px;*/
+        text-decoration: underline;
+	}
+}
+.TabButtons-listItem {
+	& + & {
+		.TabButtons-button {
+			border-left: 0;
+		}
+	}
+}
+
+// ACCORDION STUFF //
+.Accordion-group {
+	/*border: $AccordionHead--border;*/
+	& + & {
+		margin-top: -$AccordionHead--borderWidth;
+	}
+
+	/* animation */
+// 	overflow: hidden;
+// 	max-height: (1.25 * 1rem) + ($AccordionHead--paddingH * 2);
+// 	transition: max-height 0.2s;
+
+// 	&[open] {
+// 		max-height: 500px;
+// 	}
+}
+
+.Accordion-head,
+.Accordion-panel,
+%Accordion-panel {
+	/*padding: $AccordionHead--padding;*/
+}
+
+$Tab--background: #EEE;
+
+@mixin background_line (
+	$background_color: rgba($AccordionPanel-focus--borderColor, 0.5),
+	$background_height: 2px
+) {
+	background-image: linear-gradient(to top,
+		#{$background_color} #{$background_height},
+		transparent #{$background_height}
+	);
+	background-repeat: repeat-x;
+	background-position: 0 $background_height;
+	transition: background-position 0.25s;
+}
+
+.Accordion-head {
+	font-size: 1rem;
+	line-height: 1.25;
+	background-color: $Tab--background;
+	// hover "underline" style //
+	@include background_line;
+
+	&:hover {
+		background-position: 0 0px;
+	}
+
+	&:after {
+		content: "+";
+		position: absolute;
+		right: 0;
+		top: 0;
+		font-size: 1rem;
+		padding: $AccordionHead--padding;
+	}
+
+	// FOCUS ELEMENT
+	&:before {
+		content: "";
+		outline: 1px solid $AccordionPanel-focus--borderColor;
+		position: absolute;
+		top: 0; left: 0; right: 0; bottom: 0;
+		z-index: 5;
+		pointer-events: none;
+		opacity: 0;
+		transition: opacity 0.2s;
+	}
+
+	&:focus {
+		z-index: 2;
+		outline: none;
+
+		&:before {
+			opacity: 1;
+		}
+	}
+}
+// .Accordion-group[open] {
+// 	outline: 1px dotted red;
+// }
+.Accordion-panel,
+%Accordion-panel {
+	line-height: 1.5;
+	/*background-color: #F8F8F8;*/
+
+	// spacing for P tags 'n' stuff
+	> * {
+		margin-top: 0.25rem;
+		margin-bottom: 0.25rem;
+		+ * {
+			margin-top: 1rem;
+		}
+	}
+}
+.Accordion-panel {
+	border-top: $AccordionHead--border;
+}
+
+.Tab-panel {
+	@extend %Accordion-panel;
+}
+
+.TabButtons {
+	&-button {
+		&[aria-selected="true"] {
+			/*background-color: $Tab--background;*/
+            font-weight: bold;
+            text-decoration: underline;
+		}
+	}
+}
