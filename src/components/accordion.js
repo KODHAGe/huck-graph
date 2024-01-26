@@ -31,7 +31,7 @@ export default function Accordion({
   return (
     <>
       {asTabs && (
-        <div className="TabButtons">
+        <div id="mainNav" className="TabButtons">
           <ul role="tablist" className="TabButtons-list">
             {panels.map(({ content, heading, id, open }, i) => (
               <li key={i} className="TabButtons-listItem">

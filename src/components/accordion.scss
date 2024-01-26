@@ -194,3 +194,11 @@ $Tab--background: #EEE;
 		}
 	}
 }
+
+#mainNav {
+    position: sticky;
+    top: 0rem;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    background-color: rgb(232, 225, 239);
+}

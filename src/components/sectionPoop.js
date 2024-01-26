@@ -1,7 +1,9 @@
+import JacquardGraph from "./jacquardGraph"
+
 function SectionPoop(props) {
   return (
     <div id="SectionPoop">
-        <p>Poop section</p>
+        <JacquardGraph data={props.data} days={props.days}/>
     </div>
   );
 }

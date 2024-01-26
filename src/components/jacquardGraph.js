@@ -162,7 +162,7 @@ const JacquardGraph = ({ data, days }) => {
         ref={d3svg}
     ></svg>
     <button onClick={() => {
-        saveFile(d3svg, 900, height)}}>pdf</button>
+        saveFile(d3svg, 900, height)}}>Export as PDF (kinda broken for the time being)</button>
     </>
     )
 }

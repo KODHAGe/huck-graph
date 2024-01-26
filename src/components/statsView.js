@@ -180,12 +180,12 @@ export default function tidyStats(csvData) {
             {
                 id: "Potty",
                 heading: "Potty section",
-                content: <SectionPoop data={splitData.sleep} days={splitData.dateDiff}></SectionPoop>
+                content: <SectionPoop data={splitData.diaper} days={splitData.dateDiff}></SectionPoop>
             },
             {
                 id: "Drink",
                 heading: "Drink section",
-                content: <SectionDrink data={splitData.sleep} days={splitData.dateDiff}></SectionDrink>
+                content: <SectionDrink data={splitData.feed} days={splitData.dateDiff}></SectionDrink>
 
 
             },

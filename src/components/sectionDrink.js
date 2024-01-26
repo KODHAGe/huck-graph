@@ -1,7 +1,9 @@
+import JacquardGraph from "./jacquardGraph"
+
 function SectionDrink(props) {
   return (
     <div id="SectionDrink">
-        <p>Drink section</p>
+        <JacquardGraph data={props.data} days={props.days}/>
     </div>
   );
 }
