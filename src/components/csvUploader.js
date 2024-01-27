@@ -42,7 +42,9 @@ export default function CSVReader({updateCsvData}) {
                             </div>
                         }
                         { acceptedFile &&
-                            <a className="removebutton" {...getRemoveFileProps()} style={styles.remove}>
+                            <a className="removebutton" {...getRemoveFileProps()} onClick={() => {
+                                updateCsvData("")}
+                                } style={styles.remove}>
                                 Remove file
                             </a>
                         }
