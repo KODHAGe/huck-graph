@@ -2,7 +2,7 @@ import JacquardGraph from "./jacquardGraph";
 function SectionSleep(props) {
   return (
     <div id="SectionSleep">
-        <p>Sleep section</p>
+        <h2>3.1 The <span className="italic">"Sleep blanket"</span></h2>
         <JacquardGraph data={props.data} days={props.days}/>
     </div>
   );

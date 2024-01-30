@@ -13,12 +13,12 @@ const color = ['#f05440', '#d5433d', '#b33535', '#283250']
 
 const BarChart = ({ data }) => {
 
-    console.log(data)
     const d3svg = useRef(null)
 
     useEffect(() => {
         if (data && d3svg.current) {
             let svg = select(d3svg.current)
+            data.length = 30
 
             // scales
             const xMax = max(data, d => d.count[0].n)

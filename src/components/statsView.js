@@ -64,25 +64,37 @@ export default function tidyStats(csvData) {
             data,
             filter((d) => d.Type === "Feed"),
             mutate({
-                food: (d) => d["Start Location"].split(",")
+                food: (d) => {
+                    console.log(d)
+                    if(d["Start Location"] === "Breast") {
+                        return "Breast milk".toLowerCase()
+                    } else {
+                        return d["Start Condition"].toLowerCase()
+                    }
+                }
             }),
             //rename({'End Condition': 'title'})
         )
+        console.log(splitData.feed)
 
-        // Split each entry into its comp   onents (aka single foods)
-        splitData.feed = splitData.feed.reduce((a, d) => {
+        // Split each entry into its components (aka single foods)
+        /*splitData.feed = splitData.feed.reduce((a, d) => {
             let flat = d.food.map((food) => {
                 food = food.toLowerCase().trim()
                 return { ...d, food }
             })
             return [...a, ...flat]
-        }, [])
+        }, [])*/
+        console.log(splitData.feed)
 
         splitData.feed.bottle = tidy(
             splitData.feed,
             filter((d) => d["Start Location"] === "Bottle"),
+            mutate({
+                drink: (d) => d["Start Condition"].split(",")
+            }),
             groupBy('title', [
-                summarize({ count: count("Start Location") })
+                summarize({ count: count("drink") })
             ]),
             arrange((a, b) => parseInt(b.title) - parseInt(a.title))
         )
@@ -160,10 +172,12 @@ export default function tidyStats(csvData) {
             {
                 id: "All",
                 open: true,
-                heading: "All entries",
+                heading: "0. Everything",
                 content: (
                     <>
-                        <p>Here are all of your logged events in a graph. Each row represents a day.</p>
+                        <p>The everything section contains, well, all of it. All of your {csvData.csvData.length} events.</p>
+                        <h2>0.1 <span className="italic">The Everything-everything</span></h2>
+                        <p><span className="italic">Everything-everything</span> consists of all the events you've logged, drawn as a vertical calendar. Each row represents a day (as 24 hours). Each colored section represents a logged event - events logged without a duration are given a length of 15 minutes.</p>
                             <p>
                             <span style={{ color: "#17a2b8" }}> ●</span> sleep
                             <span style={{ color: "#8fd33c" }}> ●</span> breastfeeding
@@ -178,27 +192,27 @@ export default function tidyStats(csvData) {
                 )
             },
             {
-                id: "Potty",
-                heading: "Potty section",
-                content: <SectionPoop data={splitData.diaper} days={splitData.dateDiff}></SectionPoop>
-            },
-            {
                 id: "Drink",
-                heading: "Drink section",
+                heading: "1. Drink",
                 content: <SectionDrink data={splitData.feed} days={splitData.dateDiff}></SectionDrink>
 
 
             },
             {
                 id: "Food",
-                heading: "Food section",
+                heading: "2. Food",
                 content: (
                     <SectionFood data={splitData.allFoods} days={splitData.dateDiff} toplist={splitData.allFoods.toplist}></SectionFood>
                 )
             },
             {
+                id: "Potty",
+                heading: "3. Diaper",
+                content: <SectionPoop data={splitData.diaper} days={splitData.dateDiff}></SectionPoop>
+            },
+            {
                 id: "Sleep",
-                heading: "Sleep section",
+                heading: "4. Sleep",
                 content: (
                     <SectionSleep data={splitData.sleep} days={splitData.dateDiff}></SectionSleep>
                 )
