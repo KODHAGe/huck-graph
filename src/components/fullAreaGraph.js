@@ -9,8 +9,6 @@ const margin = { top: 80, right: 60, bottom: 80, left: 60 }
 const width = 600 - margin.left - margin.right
 const height = 600 - margin.top - margin.bottom
 
-const color = ['#f05440', '#d5433d', '#b33535', '#283250']
-
 let week = utcParse("%Y-%m-%d %H:%M")
 let weekNr = d3.utcFormat("%Y%V")
 let parseWeek = utcParse("%Y%V")
@@ -34,13 +32,34 @@ const FullAreaGraph = ({ data }) => {
                 return d
             })
 
-            console.log(numberedWeeks)
+            //console.log(numberedWeeks)
+            const fixedOrder = ['Potty', 'Dry', 'Pee', 'Both', 'Poo'];
 
             // Determine the series that need to be stacked.
             const series = d3.stack()
                 .offset(d3.stackOffsetExpand)
-                .order(d3.stackOrderInsideOut)
-                .keys(d3.union(numberedWeeks.map(d => d["food"]))) // distinct series keys, in input order
+                .order((D) => {
+                    let order = fixedOrder
+                    D.forEach((d,i) => {
+                        order[order.indexOf(d.key)] = i
+                    })
+                    return order.reverse()
+                })
+                .keys(d3.union(numberedWeeks.map((d) => {
+                    let str = d["End Condition"].toLowerCase()
+
+                    if(d["Type"] === "Potty") {
+                        return "Potty"
+                    } else if(str.includes("both")) {
+                        return "Both"
+                    } else if (str.includes("pee")) {
+                        return "Pee"
+                    } else if (str.includes("poo")) {
+                        return "Poo"
+                    } else {
+                        return d["End Condition"]
+                    }
+                }))) // distinct series keys, in input order
                 .value(([, D], key) => {
                     if(D.get(key)) {
                         return D.get(key)
@@ -48,40 +67,33 @@ const FullAreaGraph = ({ data }) => {
                         return 0
                     }
                 })
-                (d3.rollup(numberedWeeks, (D) => D.length, (d) => d.weekNr, (d) => d["food"])); // group by stack then series key
-
+                (d3.rollup(numberedWeeks, (D) => D.length, (d) => d.weekNr, (d) => {
+                    let str = d["End Condition"].toLowerCase()
+                    if(d["Type"] === "Potty") {
+                        return "Potty"
+                    } else if(str.includes("both")) {
+                        return "Both"
+                    } else if (str.includes("pee")) {
+                        return "Pee"
+                    } else if (str.includes("poo")) {
+                        return "Poo"
+                    } else {
+                        return d["End Condition"]
+                    }
+                })); // group by stack then series key
             const x = d3.scaleUtc()
                 .domain(d3.extent(numberedWeeks, d => parseWeek(d.weekNr)))
-                .range([marginLeft, width - marginRight]);
+                .range([8, width - 8]);
 
             const y = d3.scaleLinear()
                 .domain(d3.extent(series.flat(2)))
                 .rangeRound([height - marginBottom, marginTop]);
-
-            const color = d3.scaleOrdinal()
-                .domain(series.map(d => d.key))
-                .range(d3.schemeTableau10);
 
             const area = d3.area()
                 .x(d => x(parseWeek(d.data[0])))
                 .y0(d => y(d[0]))
                 .y1(d => y(d[1]))
                 .curve(d3.curveBumpX)
-
-            // Add the y-axis, remove the domain line, add grid lines and a label.
-            svg.append("g")
-                .attr("transform", `translate(${marginLeft},0)`)
-                .call(d3.axisLeft(y).ticks(height / 80).tickFormat((d) => Math.abs(d).toLocaleString("en-US")))
-                .call(g => g.select(".domain").remove())
-                .call(g => g.selectAll(".tick line").clone()
-                    .attr("x2", width - marginLeft - marginRight)
-                    .attr("stroke-opacity", 0.1))
-                .call(g => g.append("text")
-                    .attr("x", -marginLeft)
-                    .attr("y", 10)
-                    .attr("fill", "currentColor")
-                    .attr("text-anchor", "start")
-                    .text("Feedings"));
 
             // Append the x-axis and remove the domain line.
             svg.append("g")
@@ -94,7 +106,20 @@ const FullAreaGraph = ({ data }) => {
                 .selectAll()
                 .data(series)
                 .join("path")
-                .attr("fill", d => color(d.key))
+                .attr("fill",(d) => {
+                    let str = d.key.toLowerCase()
+                    if(d.key === "Potty") {
+                        return "#81D8D0"
+                    } else if(str.includes("both")) {
+                        return "#B87333"
+                    } else if (str.includes("pee")) {
+                        return "#E1C16E"
+                    } else if (str.includes("poo")) {
+                        return "#6F4E37"
+                    } else {
+                        return "#cccccc"
+                    }
+                })
                 .attr("d", area)
                 .append("title")
                 .text(d => d.key);

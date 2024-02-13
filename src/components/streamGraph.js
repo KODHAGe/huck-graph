@@ -10,7 +10,7 @@ let parseWeek = utcParse("%Y%V")
 
 const StreamGraph = ({ data, days }) => {
 
-    console.log(data)
+    //console.log(data)
 
     let numberedWeeks = data.map((d) => {
         d.weekNr = weekNr(week(d.Start))
@@ -50,9 +50,9 @@ const StreamGraph = ({ data, days }) => {
                 .range([0 + 30 , width - 30]);
 
             const color = d3.scaleOrdinal()
-                .domain(series.map(d => d.key))
+                //.domain(series.map(d => d.key))
                 //.range(["#17a2b8","#8fd33c","#fd7e14","#ebb85f","#6c757d","#e83e8c","#6610f2"]);
-                .range(["#845EC2","#D65DB1","#FF6F91","#FF9671","#FFC75F","#F9F871"]);
+                .range(["#845EC2","#D65DB1","#FF6F91","#FF9671","#FFC75F","#17a2b8"]);
                 
             const area = d3.area()
                 .y(d => y(parseWeek(d.data[0])))

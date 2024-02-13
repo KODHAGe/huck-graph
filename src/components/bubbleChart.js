@@ -17,7 +17,7 @@ const BubbleChart = ({ data, days }) => {
     // Create a categorical color scale.
     const color = d3.scaleOrdinal()
     //.range(["#17a2b8","#8fd33c","#fd7e14","#ebb85f","#6c757d","#e83e8c","#6610f2"]);
-    .range(["#845EC2","#D65DB1","#FF6F91","#FF9671","#FFC75F","#F9F871"]);
+    .range(["#845EC2","#D65DB1","#FF6F91","#FF9671","#FFC75F","#17a2b8"]);
 
     // Create the pack layout.
     const pack = d3.pack()
@@ -27,7 +27,7 @@ const BubbleChart = ({ data, days }) => {
     // Compute the hierarchy from the (flat) data; expose the values
     // for each node; lastly apply the pack layout.
 
-    console.log(data)
+    //console.log(data)
     const root = pack(d3.hierarchy({children: data})
         .sum((d) => {
             //console.log(d)
@@ -43,7 +43,6 @@ const BubbleChart = ({ data, days }) => {
     useEffect(() => {
         if (data && d3svg.current) {
             let svg = select(d3svg.current)
-            console.log(root)
 
             const node = svg.append("g")
             .selectAll()

@@ -116,7 +116,17 @@ const JacquardGraph = ({ data, days }) => {
                             return "#fd7e14"
                         }
                     } else if (d.Type === 'Diaper') {
-                        return "#ebb85f"
+                        let str = d["End Condition"].toLowerCase()
+                        if(str.includes("both")) {
+                            return "#B87333"
+                        } else if (str.includes("pee")) {
+                            return "#E1C16E"
+                        } else if (str.includes("poo")) {
+                            return "#6F4E37"
+                        } else {
+                            return "white"
+                        }
+                        //return "#ebb85f"
                     } else if (d.Type === 'Potty') {
                         return "#6c757d"
                     } else if (d.Type === 'Solids') {
