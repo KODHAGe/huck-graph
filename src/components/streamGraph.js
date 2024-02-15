@@ -8,7 +8,7 @@ let week = utcParse("%Y-%m-%d %H:%M")
 let weekNr = d3.utcFormat("%Y%V")
 let parseWeek = utcParse("%Y%V")
 
-const StreamGraph = ({ data, days }) => {
+const StreamGraph = ({ data, days, cumsum }) => {
 
     //console.log(data)
 
@@ -29,47 +29,67 @@ const StreamGraph = ({ data, days }) => {
         if (data && d3svg.current) {
             let svg = select(d3svg.current)
 
-            let dingus = d3.rollups(numberedWeeks, (D) => D.length, (d) => d.weekNr, (d) => d["food"])
-            let dingas = d3.rollup(numberedWeeks, (D) => D.length, (d) => d.weekNr, (d) => d["food"])
-            console.log(dingus)
-            console.log(dingas)
-            let cumsumarray = []
+            let options = {
+                stroke: '',
+                offset: '',
+                order: '',
+                series: ''
+            }
+
+            if(cumsum) {
+                let rollup = d3.rollups(numberedWeeks, (D) => D.length, (d) => d.weekNr, (d) => d["food"])
+                rollup = rollup.sort((a,b) => {
+                    return a[0] - b[0]
+                })
+                let cumsumarray = []
+                options.stroke = "0.5"
+                options.offset = d3.stackOffsetExpand
+                options.order = d3.stackOrderDescending
             
-            dingus.forEach((d, k) => {
-                let thisWeek = [d[0], d[1]]
-                let mergeHolder = []
-                if(cumsumarray[k-1]) {
-                    let lastWeek = cumsumarray[k-1]
-                    mergeHolder.push(lastWeek)
-                    for(let z=0; z<thisWeek[1].length; z++) {
-                        let index = lastWeek[1].findIndex(function(d) {
-                            return d[0] === thisWeek[1][z][0]
-                        })
-                        if(index !== -1) {
-                            mergeHolder[0][1][index][1] += thisWeek[1][z][1]
-                        } else {
-                            mergeHolder[0][1].push(thisWeek[1][z])
+                rollup.forEach((d, k) => {
+                    let thisWeek = [d[0], d[1]]
+                    let mergeHolder = []
+                    if(cumsumarray[k-1]) {
+                        let lastWeek = cumsumarray[k-1]
+                        mergeHolder.push([d[0], structuredClone(lastWeek[1])])
+                        for(let z=0; z<thisWeek[1].length; z++) {
+                            let index = lastWeek[1].findIndex(function(d) {
+                                return d[0] === thisWeek[1][z][0]
+                            })
+                            if(index !== -1) {
+                                mergeHolder[0][1][index][1] += thisWeek[1][z][1]
+                            } else {
+                                mergeHolder[0][1].push(thisWeek[1][z])
+                            }
                         }
+                        cumsumarray.push(mergeHolder[0])
+                    } else {
+                        cumsumarray.push([d[0], d[1]])
                     }
-                    cumsumarray.push(mergeHolder[0])
-                } else {
-                    cumsumarray.push([d[0], d[1]])
-                }
-            })
+                })
+                options.series = new d3.InternMap(cumsumarray.map((x) => {
+                    return [x[0], new d3.InternMap(x[1])]
+                }))
+            } else {
+                options.stroke = "2"
+                options.offset = d3.stackOffsetSilhouette
+                options.order = d3.stackOrderReverse
+                options.series = d3.rollup(numberedWeeks, (D) => D.length, (d) => d.weekNr, (d) => d["food"])
+            }
 
             const series = d3.stack()
-                .offset(d3.stackOffsetSilhouette)
-                .order(d3.stackOrderInsideOut)
+                .offset(options.offset)
+                .order(options.order)
                 .keys(d3.union(numberedWeeks.map(d => d["food"])))
                 .value(([, D], key) => {
+                    console.log(D)
                     if (D.get(key)) {
                         return D.get(key)
                     } else {
                         return 0
                     }
                 })
-                (d3.rollup(numberedWeeks, (D) => D.length, (d) => d.weekNr, (d) => d["food"]))
-                //(d3.rollup(numberedWeeks, (D) => D.length, (d) => d.weekNr, (d) => d["food"])); // group by stack then series key
+                (options.series)
 
             const y = d3.scaleUtc()
                 .domain(d3.extent(numberedWeeks, d => parseWeek(d.weekNr)))
@@ -97,7 +117,7 @@ const StreamGraph = ({ data, days }) => {
                 .join("path")
                 .attr("fill", d => color(d.key))
                 .attr("stroke", "rgb(232, 225, 239)")
-                .attr("stroke-width", "2")
+                .attr("stroke-width", options.stroke)
                 .attr("d", area)
                 .append("title")
                 .text(d => d.key);

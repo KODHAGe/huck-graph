@@ -75,7 +75,9 @@ function SectionFood(props) {
         <h2>2.1. <span className="italic">You are what you eat</span></h2>
         <BubbleChart data={props.toplist} days={props.days}/>
         <h2>2.2. <span className="italic">Palate-complexity-stream</span></h2>
-        <StreamGraph data={props.data} days={props.days}/>
+        <StreamGraph data={props.data} days={props.days} cumsum={false}/>
+        <h2>2.3. <span className="italic">Cumulative complexity ratio</span></h2>
+        <StreamGraph data={props.data} days={props.days} cumsum={true}/>
     </div>
   );
 }
