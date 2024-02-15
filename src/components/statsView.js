@@ -68,16 +68,6 @@ export default function tidyStats(csvData) {
             }),
             //rename({'End Condition': 'title'})
         )
-        //console.log(splitData.feed)
-
-        // Split each entry into its components (aka single foods)
-        /*splitData.feed = splitData.feed.reduce((a, d) => {
-            let flat = d.food.map((food) => {
-                food = food.toLowerCase().trim()
-                return { ...d, food }
-            })
-            return [...a, ...flat]
-        }, [])*/
 
         splitData.feed.bottle = tidy(
             splitData.feed,
@@ -133,6 +123,8 @@ export default function tidyStats(csvData) {
             addRows(splitData.feed)
         )
 
+        console.log(splitData.allFoods)
+
         // counts of all food types
         splitData.allFoods.toplist = tidy(
             splitData.allFoods,
@@ -142,23 +134,6 @@ export default function tidyStats(csvData) {
             arrange((a, b) => b.count[0].n - a.count[0].n),
             rename({ 'food': 'title' }),
         )
-
-        /*
-        splitData.allFoods = tidy(
-            data,
-            filter((d) => d.Type === "Feed" || d.Type === "Solids"),
-            mutate({
-                food: (d) => d["Start Condition"].split(",")
-            })
-        )
-
-        splitData.allFoods = splitData.allFoods.reduce((a, d) => {
-            let flat = d.food.map((food) => {
-                food = food.toLowerCase().trim()
-                return { ...d, food}
-            })
-            return [...a, ...flat]
-        }, [])*/
 
         accordionPanels = [
             {

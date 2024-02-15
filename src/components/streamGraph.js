@@ -17,6 +17,7 @@ const StreamGraph = ({ data, days }) => {
         return d
     })
 
+
     let weekRange = d3.timeWeek.count(parseWeek(numberedWeeks[numberedWeeks.length - 1].weekNr), parseWeek(numberedWeeks[0].weekNr))
 
     const d3svg = useRef(null)
@@ -27,6 +28,34 @@ const StreamGraph = ({ data, days }) => {
     useEffect(() => {
         if (data && d3svg.current) {
             let svg = select(d3svg.current)
+
+            let dingus = d3.rollups(numberedWeeks, (D) => D.length, (d) => d.weekNr, (d) => d["food"])
+            let dingas = d3.rollup(numberedWeeks, (D) => D.length, (d) => d.weekNr, (d) => d["food"])
+            console.log(dingus)
+            console.log(dingas)
+            let cumsumarray = []
+            
+            dingus.forEach((d, k) => {
+                let thisWeek = [d[0], d[1]]
+                let mergeHolder = []
+                if(cumsumarray[k-1]) {
+                    let lastWeek = cumsumarray[k-1]
+                    mergeHolder.push(lastWeek)
+                    for(let z=0; z<thisWeek[1].length; z++) {
+                        let index = lastWeek[1].findIndex(function(d) {
+                            return d[0] === thisWeek[1][z][0]
+                        })
+                        if(index !== -1) {
+                            mergeHolder[0][1][index][1] += thisWeek[1][z][1]
+                        } else {
+                            mergeHolder[0][1].push(thisWeek[1][z])
+                        }
+                    }
+                    cumsumarray.push(mergeHolder[0])
+                } else {
+                    cumsumarray.push([d[0], d[1]])
+                }
+            })
 
             const series = d3.stack()
                 .offset(d3.stackOffsetSilhouette)
@@ -39,7 +68,8 @@ const StreamGraph = ({ data, days }) => {
                         return 0
                     }
                 })
-                (d3.rollup(numberedWeeks, (D) => D.length, (d) => d.weekNr, (d) => d["food"])); // group by stack then series key
+                (d3.rollup(numberedWeeks, (D) => D.length, (d) => d.weekNr, (d) => d["food"]))
+                //(d3.rollup(numberedWeeks, (D) => D.length, (d) => d.weekNr, (d) => d["food"])); // group by stack then series key
 
             const y = d3.scaleUtc()
                 .domain(d3.extent(numberedWeeks, d => parseWeek(d.weekNr)))

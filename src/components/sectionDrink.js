@@ -26,7 +26,6 @@ function sumDrinkVolumes(data) {
       return a + parseInt(b["End Condition"])
     }, 0)
   })
-  console.log(counts)
   return counts
 }
 
@@ -46,7 +45,7 @@ function countMinutes(duration) {
 }
 
 function SectionDrink(props) {
-  console.log(props.data)
+  //console.log(props.data)
   return (
     <div id="SectionDrink" className="sectionStart">
       <p>The Drink section is all about liquid intake - the most important stuff for under one-year-olds.
